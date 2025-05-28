@@ -6,7 +6,7 @@ The objective of this project is to genereate web-interactive graphs generated i
 
 
 ## Original README
-<i>
+
 ### Description
 The purpose of this codebase is to generate the figures and tables for the papers:
 
@@ -79,4 +79,3 @@ MIT License, see LICENSE.
 
 - Sam Wurzel, 8 May 2025
 
-</i>
