@@ -1,5 +1,12 @@
-# Progress toward Fusion Energy Breakeven and Gain as Measured against the Lawson Criteria
+# Interative Plots for fork of "Progress toward Fusion Energy Breakeven and Gain as Measured against the Lawson Criteria"
 
+## Header
+This project is a fork of code and database papers mentioned along with copy of original README. 
+The objective of this project is to genereate web-interactive graphs generated in original repo. 
+
+
+## Original README
+<i>
 ### Description
 The purpose of this codebase is to generate the figures and tables for the papers:
 
@@ -71,3 +78,5 @@ https://doi.org/10.1088/0029-5515/40/4/310
 MIT License, see LICENSE.
 
 - Sam Wurzel, 8 May 2025
+
+</i>
