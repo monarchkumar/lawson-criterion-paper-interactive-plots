@@ -19,21 +19,20 @@
 # # Interactive Web-Graphs
 # Monarch Kumar
 
+# %% [markdown]
+# The following contains only relevent and mostly unedited section from the original codebase. The intention is to use original code for calculations and use those variables as-is for web-enabled graphs.
+# <HR><HR>
+
 # %%
-# %matplotlib inline
 # Minor issue - matplotlib is unable to sorce Arial or Helvetica on my device for some reason.
 # It still works but throws warning errors, which I have muted here
 import logging
 logging.getLogger('matplotlib.font_manager').setLevel(logging.ERROR)
 
-# %% [markdown]
-# The following contains only relevent and mostly unedited section from the original codebase. The intention is to use original code for calculations and use those variables as-is for web-enabled graphs.
-# <HR><HR>
-
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # # Configuration Setup
 
-# %%
+# %% jupyter={"source_hidden": true}
 import math
 import sys
 import os
@@ -1175,7 +1174,7 @@ icf_ex = experiment.IndirectDriveICFDTBettiCorrectionExperiment()
 # %% [markdown] jp-MarkdownHeadingCollapsed=true
 # # Original Plots
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # ## Scientific gain vs year achieved
 
 # %% jupyter={"source_hidden": true}
@@ -1339,10 +1338,10 @@ with plt.style.context('./styles/large.mplstyle', after_reset=True):
 # %% [markdown]
 # ## Lawson parameter vs ion temperature
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # ### Function to create a rectanble around a point
 
-# %% jupyter={"source_hidden": true}
+# %%
 def add_rectangle_around_point(ax, x_center, y_center, L_pixels, color='gold', linewidth=2, zorder=10):
     """
     Add a rectangle centered around a point on a plot.
@@ -1415,10 +1414,10 @@ def add_rectangle_around_point(ax, x_center, y_center, L_pixels, color='gold', l
     return rectangle
 
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # ### Plot of ntau vs T
 
-# %%
+# %% jupyter={"source_hidden": true}
 def plot_ntau_vs_T(on_or_before_date=None,
                    filename=os.path.join('images', label_filename_dict['fig:scatterplot_ntauE_vs_T']),
                    display=True,
@@ -1740,10 +1739,10 @@ def plot_ntau_vs_T(on_or_before_date=None,
 plot_ntau_vs_T()
 #fig = plot_ntau_vs_T(on_or_before_date=datetime(2022, 1, 1))
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # ## Triple Product vs ion temperature
 
-# %%
+# %% jupyter={"source_hidden": true}
 default_indicator = {'arrow': False,
                      'xoff': 0.05,
                      'yoff': -0.07}
@@ -2036,7 +2035,7 @@ with plt.style.context('./styles/large.mplstyle', after_reset=True):
 # %% [markdown]
 # ## Triple product vs year achieved
 
-# %%
+# %% jupyter={"source_hidden": true}
 from datetime import datetime 
 # Identify triple product results which are records for that particular concept
 def is_concept_record(row):
@@ -2059,10 +2058,10 @@ def is_concept_record(row):
 mcf_mif_icf_df['is_concept_record'] = mcf_mif_icf_df.apply(is_concept_record, axis=1)
 mcf_mif_icf_df.sort_values(by='Date', inplace=True)
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # ### Plot of Triple Product vs Year
 
-# %%
+# %% jupyter={"source_hidden": true}
 default_indicator = {'arrow': False,
                      'xoff': 1,
                      'yoff': 0}
@@ -2183,6 +2182,7 @@ with plt.style.context('./styles/large.mplstyle', after_reset=True):
     ax.set_ylabel(r'$n_{i0} T_{i0} \tau_E^*, \; n \langle T_i \rangle_{\rm n} \tau_{\rm stag} \; {\rm (m^{-3}~keV~s)}$')
     ax.grid(which='major')
 
+
     # Plot horizontal lines for indicated values of Q_MCF (actually rectangles of height
     # equal to difference between maximum and minimum values of triple product at temperature
     # for which the minimum triple product (proportional to pressure) is required.
@@ -2267,6 +2267,8 @@ with plt.style.context('./styles/large.mplstyle', after_reset=True):
     ax.annotate(r'${\rm @ 10~keV}$', (datetime(2033,1,1), 1.25e22), alpha=1, color='black')
     ax.annotate(r'${\rm @ 4~keV}$', (datetime(2033,1,1), 4e22), alpha=1, color='black')
     #ax.annotate(r'$@T_i = 10{\rm keV}$', (datetime(1990,1,1), 3.7e21), alpha=1, color='black')
+    
+    
     # Scatterplot of data
     #d = mcf_mif_icf_df[mcf_mif_icf_df['is_concept_record'] == True]
     # Make exception for N210808 since it achieved hot-spot ignition
@@ -2311,6 +2313,7 @@ with plt.style.context('./styles/large.mplstyle', after_reset=True):
                 annotation['xytext'] = (row['Date'] + timedelta(days=365*indicator['xoff']), 10**indicator['yoff'] * row['nTtauEstar_max'])
             annotation['zorder'] = 10
             ax.annotate(**annotation)
+    
 
     #SPARC
     sparc_tp = mcf_mif_icf_df.loc[mcf_mif_icf_df['Project Displayname'] == r'SPARC']['nTtauEstar_max'].iloc[0]
@@ -2389,15 +2392,19 @@ with plt.style.context('./styles/large.mplstyle', after_reset=True):
 # %% [markdown]
 # Using [Plotly](https://plotly.com/python/interactive-html-export/), as it exports interactive HTML directly from Python and are easy to embed.
 
-# %%
+# %% jupyter={"source_hidden": true}
 import plotly
 import plotly.graph_objects as go
 import plotly.colors as pc
 
+#Specific requirement to render ploty graphs in Juputer Notebook
+import plotly.io as pio
+pio.renderers.default = 'iframe'
+
 # %% [markdown]
 # Converting matplotlib notations for symbols to plotly convention.
 
-# %%
+# %% jupyter={"source_hidden": true}
 concept_dict_conversion = {
     'o': 'circle',
     '*': 'star',
@@ -2421,11 +2428,11 @@ icf_curve_conversion = {
 for concept in concept_dict: concept_dict[concept]['markersize'] = 12
 
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # ### Plotly HTMLplot export function
 
-# %% jupyter={"source_hidden": true}
-def HTMLplot_to_html(fig, name = 'HTMLplot.html', include_libs = 'cdn', figID = 'my_plot'):
+# %%
+def plotlyplot_to_html(fig, name = 'HTMLplot.html', include_libs = 'cdn', figID = 'my_plot'):
     '''Export plotly figures to HTML. Give custom links for each datapoints as 'data.points[0].customdata' '''
     fig.write_html(
         name,
@@ -2437,6 +2444,7 @@ def HTMLplot_to_html(fig, name = 'HTMLplot.html', include_libs = 'cdn', figID = 
             'displayModeBar': False
         },
         div_id=figID,
+        #Adding JS commands to open customlinks when cliked on, and disabled legend interactions.
         post_script=f"""
             document.getElementById('{figID}').on('plotly_click', function(data) {{
                 const url = data.points[0].customdata[0];
@@ -2444,29 +2452,30 @@ def HTMLplot_to_html(fig, name = 'HTMLplot.html', include_libs = 'cdn', figID = 
                     window.open(url, '_blank');
                 }}
             }});
+            document.getElementById('{figID}').on('plotly_legendclick', () => false)
             """
     )
 
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 # ### Plotly Triple Product vs Ion Temperature plot function
 
-# %%
+# %% jupyter={"source_hidden": true}
 def plotlyplot_tripleprod_vs_T(add_prepublication_watermark= True):
     '''Returns Triple Product vs Ion Temperature plotly figures to HTML.'''
     
     fig = go.Figure()   
 
-    # Configure axes to be logarithmic and set ranges
+    # Configure axes and set ranges
     fig.update_xaxes(
         type="log",
         range=[np.log10(0.01), np.log10(100)],
         title = dict(
             text=r"$T_{i0}, \langle T_i \rangle_{\rm n}\;(\mathrm{keV})$",
-            font=dict(size=18)
+            font=dict(size=21)
         ),
         showgrid=True, gridwidth=1, gridcolor="lightgrey",
-        tickfont=dict(size=16),
+        tickfont=dict(size=18),
         dtick=1
     )
     
@@ -2475,10 +2484,52 @@ def plotlyplot_tripleprod_vs_T(add_prepublication_watermark= True):
         range=[np.log10(1e12), np.log10(1e23)],
         title = dict(
             text=r"$n_{i0} T_{i0} \tau_E^*,\;n\langle T_i\rangle_{\rm n}\tau_{\rm stag}\;(\mathrm{m^{-3}\,keV\,s})$",
-            font=dict(size=18)
+            font=dict(size=21)
         ),
-        tickfont=dict(size=16),
+        tickfont=dict(size=18),
         showgrid=True, gridwidth=1, gridcolor="lightgrey",
+    )
+
+    # Prepublication watermark
+    if add_prepublication_watermark:
+        fig.add_annotation(
+            text="Prepublication",
+            x=0.5,          
+            y=0.5,          
+            xref="paper",  
+            yref="paper",
+            opacity=0.1,
+            font=dict(size=70),
+            textangle=-45,
+            showarrow=False
+        )    
+    # Disable zoom interactions and general sanitation
+    fig.update_layout(
+        width=700,      
+        height=700,
+        xaxis=dict(fixedrange=True),
+        yaxis=dict(fixedrange=True),
+        legend_tracegroupgap=0,
+        legend=dict(
+            title_font=dict(size=12),      
+            font=dict(size=10),            
+            x=0.01,                        
+            y=0.99,                        
+            xanchor="left",
+            yanchor="top",
+            bgcolor="rgba(255,255,255,0.7)",  
+            bordercolor="black",
+            borderwidth=1
+        ),
+        title=dict(
+            # text="Triple Product VS Ion Temperature", # set title of the graph 
+            x=0.5,               
+            xanchor="center",
+            y=0.0,              
+            yanchor="bottom",
+        ),
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        margin=dict(b=80)
     )
     
     
@@ -2620,6 +2671,47 @@ def plotlyplot_tripleprod_vs_T(add_prepublication_watermark= True):
         showarrow=False
     )
     
+   
+    
+    return fig
+    
+plotlyplot_to_html(plotlyplot_tripleprod_vs_T(), name='tripleprod_vs_T.html')
+plotlyplot_tripleprod_vs_T().show()
+
+
+# %% [markdown]
+# ### Plotly nTau vs Ion Temperature plot function
+
+# %% jupyter={"source_hidden": true}
+def plotlyplot_ntau_vs_T(add_prepublication_watermark= True):
+    '''Returns ntau vs T plotly figures to HTML.'''
+    
+    fig = go.Figure()
+
+    # Configure axes and set ranges
+    fig.update_xaxes(
+        type="log",
+        range=[np.log10(0.01), np.log10(100)],
+        title = dict(
+            text=r"$T_{i0}, \langle T_i \rangle_{\rm n} \; {\rm (keV)}$",
+            font=dict(size=21)
+        ),
+        showgrid=True, gridwidth=1, gridcolor="lightgrey",
+        tickfont=dict(size=18),
+        dtick=1
+    )
+    
+    fig.update_yaxes(
+        type="log",
+        range=[np.log10(1e14), np.log10(1e22)],
+        title = dict(
+            text=r"$n_{i0} \tau_E^*, \; n \tau_{\rm stag} \; {\rm (m^{-3}~s)}$",
+            font=dict(size=21)
+        ),
+        tickfont=dict(size=18),
+        showgrid=True, gridwidth=1, gridcolor="lightgrey",
+    )
+
     # Prepublication watermark
     if add_prepublication_watermark:
         fig.add_annotation(
@@ -2632,7 +2724,8 @@ def plotlyplot_tripleprod_vs_T(add_prepublication_watermark= True):
             font=dict(size=70),
             textangle=-45,
             showarrow=False
-        )    
+        ) 
+        
     # Disable zoom interactions and general sanitation
     fig.update_layout(
         width=700,      
@@ -2641,7 +2734,6 @@ def plotlyplot_tripleprod_vs_T(add_prepublication_watermark= True):
         yaxis=dict(fixedrange=True),
         legend_tracegroupgap=0,
         legend=dict(
-            title="Concept",
             title_font=dict(size=12),      
             font=dict(size=10),            
             x=0.01,                        
@@ -2653,51 +2745,14 @@ def plotlyplot_tripleprod_vs_T(add_prepublication_watermark= True):
             borderwidth=1
         ),
         title=dict(
-            text="Triple Product VS Ion Temperature",
+            # text="T-tau product VS Ion Temperature", # set title of the graph 
             x=0.5,               
             xanchor="center",
             y=0.0,              
             yanchor="bottom",
         ),
+        plot_bgcolor='rgba(0, 0, 0, 0)',
         margin=dict(b=80)
-    )
-    
-    return fig
-    
-HTMLplot_to_html(plotlyplot_tripleprod_vs_T(), name='tripleprod_vs_T.html')
-
-
-# %% [markdown]
-# ### Plotly nTau vs Ion Temperature plot function
-
-# %%
-def plotlyplot_ntau_vs_T(add_prepublication_watermark= True):
-    '''Returns ntau vs T plotly figures to HTML.'''
-    
-    fig = go.Figure()
-
-    # Configure axes to be logarithmic and set ranges
-    fig.update_xaxes(
-        type="log",
-        range=[np.log10(0.01), np.log10(100)],
-        title = dict(
-            text=r"$T_{i0}, \langle T_i \rangle_{\rm n} \; {\rm (keV)}$",
-            font=dict(size=18)
-        ),
-        showgrid=True, gridwidth=1, gridcolor="lightgrey",
-        tickfont=dict(size=16),
-        dtick=1
-    )
-    
-    fig.update_yaxes(
-        type="log",
-        range=[np.log10(1e14), np.log10(1e22)],
-        title = dict(
-            text=r"$n_{i0} \tau_E^*, \; n \tau_{\rm stag} \; {\rm (m^{-3}~s)}$",
-            font=dict(size=18)
-        ),
-        tickfont=dict(size=16),
-        showgrid=True, gridwidth=1, gridcolor="lightgrey",
     )
     
     
@@ -2839,6 +2894,85 @@ def plotlyplot_ntau_vs_T(add_prepublication_watermark= True):
         showarrow=False
     )
     
+    
+    
+    return fig
+    
+plotlyplot_to_html(plotlyplot_ntau_vs_T(), name= 'ntau_vs_T.html')
+plotlyplot_ntau_vs_T().show()
+
+# %% [markdown]
+# ### Plotly Triple Product vs Year plot function
+
+# %% jupyter={"source_hidden": true}
+#Ported directly from original code, sorts and prepares records by date.
+######################################################################
+from datetime import datetime 
+# Identify triple product results which are records for that particular concept
+def is_concept_record(row):
+    # Don't directly show projected results
+    if row['Date'].year > datetime.now().year:
+        return False
+    
+    concept_displayname = row['Concept Displayname']
+    date = row['Date']
+    nTtauEstar_max = row['nTtauEstar_max']
+    matches = mcf_mif_icf_df.query("`Concept Displayname` == @concept_displayname & \
+                                    `Date` <= @date & \
+                                    `nTtauEstar_max` > @nTtauEstar_max"
+                                 )
+    if len(matches.index) == 0:
+        return True
+    else:
+        return False
+    
+mcf_mif_icf_df['is_concept_record'] = mcf_mif_icf_df.apply(is_concept_record, axis=1)
+mcf_mif_icf_df.sort_values(by='Date', inplace=True)
+
+#Ported directly from original code, required to plot range of Q values.
+########################################################################
+# mcf_horizontal_range_dict sets the horizontal location and width of the Q_sci^MCF lines.
+# The keys are the values of Q_sci^MCF, the list in the values are [start year, length of line in years]
+mcf_horizontal_range_dict = {1: [datetime(1950, 1, 1), timedelta(days=365*100)],
+                             2: [datetime(1961, 1, 1), timedelta(days=365*100)],
+                             10: [datetime(1972, 1, 1), timedelta(days=365*100)],
+                             float('inf'): [datetime(1985, 1, 1), timedelta(days=365*100)],
+                            }
+
+
+# %% jupyter={"source_hidden": true}
+def plotlyplot_tripleprod_vs_year(add_prepublication_watermark= True):
+    '''Returns tripleprod vs year plotly figures.'''
+
+    fig = go.Figure()
+
+    # Configure axes and set ranges
+    fig.update_xaxes(
+        range=[datetime(1950, 1, 1), datetime(2045, 1, 1)],
+        title=dict(
+            text="Year",
+            font=dict(size=21)
+        ),
+        showgrid=True,
+        gridwidth=1,
+        gridcolor="lightgrey",
+        tickfont=dict(size=18),
+        dtick="M120",
+    )
+    
+    fig.update_yaxes(
+        type="log",
+        range=[np.log10(1e12), np.log10(1e23)],
+        title = dict(
+            text=r"$n_{i0} T_{i0} \tau_E^*, \; n \langle T_i \rangle_{\rm n} \tau_{\rm stag} \; {\rm (m^{-3}~keV~s)}$",
+            font=dict(size=23)
+        ),
+        tickfont=dict(size=18),
+        showgrid=True, 
+        gridwidth=1, 
+        gridcolor="lightgrey",
+    )
+
     # Prepublication watermark
     if add_prepublication_watermark:
         fig.add_annotation(
@@ -2860,29 +2994,381 @@ def plotlyplot_ntau_vs_T(add_prepublication_watermark= True):
         yaxis=dict(fixedrange=True),
         legend_tracegroupgap=0,
         legend=dict(
-            title="Concept",
-            title_font=dict(size=12),      
-            font=dict(size=10),            
-            x=0.01,                        
-            y=0.99,                        
-            xanchor="left",
-            yanchor="top",
+            orientation="h",
+            itemwidth=30 ,
+            font=dict(size=10),   
+            x=0.99,                        
+            y=0.01,     
+            xanchor="right",
+            yanchor="bottom",
             bgcolor="rgba(255,255,255,0.7)",  
-            bordercolor="black",
+            bordercolor="lightgrey",
             borderwidth=1
         ),
         title=dict(
-            text="T-tau product VS Ion Temperature",
+            # text="Triple Product vs Year", # set title of the graph 
             x=0.5,               
             xanchor="center",
             y=0.0,              
             yanchor="bottom",
         ),
+        plot_bgcolor='rgba(0, 0, 0, 0)',
         margin=dict(b=80)
     )
     
+
+    ################################################################
+    # Make exception for N210808 since it achieved hot-spot ignition
+    df_record = mcf_mif_icf_df[
+    (mcf_mif_icf_df['is_concept_record'] == True) | 
+    (mcf_mif_icf_df['Shot'].isin(['N210808']))
+    ]
+    ################################################################
+    #We need legend in two different columns. They will be arrange based on dict underneath
+    legend_sort = dict(zip(concept_list,[0]*len(concept_list)))
+    for idx, key in enumerate(legend_sort):
+        if idx <= len(legend_sort)//2: legend_sort[key] = 1
+
+    
+    # Loop over each concept and add a Scatter trace
+    for concept in concept_list:
+        df = df_record[df_record['Concept Displayname'] == concept] 
+        
+        # Annotate the exceptions ('SPARC' & 'ITER')
+        annotation = []
+        for index, row in df.iterrows():
+            displayname = row['Project Displayname']
+            nTtauE_indicator = nTtauE_indicators.get(displayname, default_indicator)
+            text = row['Project Displayname']
+            if text in ['SPARC', 'ITER']:
+                text += '*'
+            annotation += [text]
+
+        # Temparay solution, can be changed later 
+        customlinks = ["https://www.fusionenergybase.com/"] * len(df['ntauEstar_max'])
+
+        # Refering to following code for reference
+        # row['nTtauEstar_max'] = float(row['T_i_max']) * row['n_i_max'] * row['tau_E_star']
+        
+        fig.add_trace(go.Scatter(
+            x=df['Date'],
+            y=df['nTtauEstar_max'],
+            mode='markers',
+            name=concept,
+            legendgroup=legend_sort[concept],
+            marker=dict(
+                color=concept_dict[concept]['color'],
+                symbol=concept_dict_conversion.get(concept_dict[concept]['marker'], 'circle'),  
+                size=concept_dict[concept]['markersize'],
+                line=dict(width=0)
+            ),
+            customdata = list(zip(customlinks, df['Date'].dt.year, df['T_i_max'], df['n_i_max'], df['tau_E_star'], df['nTtauEstar_max'])),
+            hovertemplate=(
+                r"<b>%{text}</b><br>"
+                r"<i>%{customdata[1]}</i><br>"
+                r"T<sub>i</sub>: %{customdata[2]} keV<br>"
+                r"n: %{customdata[3]:.2e} m<sup>-3</sup><br>"
+                r"τ: %{customdata[4]:.2e} s<br>"
+                r"nTτ: %{customdata[5]:.2e} m<sup>-3</sup>keV s <extra></extra>"
+            ),
+            text=[x+' : '+ y for x,y in zip(annotation, [concept] * len(df))]
+        ))
+        fig.add_trace(go.Scatter(
+            x=df['Date'],
+            y=df['nTtauEstar_max'],
+            mode='lines',
+            showlegend=False,
+            line=dict(color=concept_dict[concept]['color']),
+        ))
+
+
+    ########################################################################
+    # Plot horizontal lines for indicated values of Q_MCF (actually rectangles of height
+    # equal to difference between maximum and minimum values of triple product at temperature
+    # for which the minimum triple product (proportional to pressure) is required.
+    #mcf_qs = [float('inf'), 1]
+    mcf_qs = [float('inf'), 10, 2, 1]
+    for mcf_band in [mcf_band for mcf_band in mcf_bands if mcf_band['Q'] in mcf_qs]:
+        min_mcf_low_impurities = DT_requirement_minimum_values_df.loc[DT_requirement_minimum_values_df['requirement'] == 'lipabdt_experiment__nTtauE_Q_{q_type}={Q}'.format(Q=mcf_band['Q'], q_type=q_type)].iloc[0]['minimum_value'] 
+        T_i0_min_mcf_low_impurities = DT_requirement_minimum_values_df.loc[DT_requirement_minimum_values_df['requirement'] == 'lipabdt_experiment__nTtauE_Q_{q_type}={Q}'.format(Q=mcf_band['Q'], q_type=q_type)].iloc[0]['T_i0']
+
+        min_mcf_high_impurities = DT_requirement_minimum_values_df.loc[DT_requirement_minimum_values_df['requirement'] == 'hipabdt_experiment__nTtauE_Q_{q_type}={Q}'.format(Q=mcf_band['Q'], q_type=q_type)].iloc[0]['minimum_value'] 
+        T_i0_min_mcf_high_impurities = DT_requirement_minimum_values_df.loc[DT_requirement_minimum_values_df['requirement'] == 'hipabdt_experiment__nTtauE_Q_{q_type}={Q}'.format(Q=mcf_band['Q'], q_type=q_type)].iloc[0]['T_i0']      
+        #min_mcf_high_impurities = DT_min_triple_product_df.loc[DT_min_triple_product_df['Q'] == 'peaked_and_broad_high_impurities Q={Q}'.format(Q=Q)].iloc[0]['minimum_triple_product'] 
+        
+        mcf_patch_height = min_mcf_high_impurities - min_mcf_low_impurities
+
+        # Compute x0, x1, y0, y1 exactly as you did for the Rectangle:
+        x0 = mcf_horizontal_range_dict.get(
+            mcf_band['Q'],
+            [datetime(1950, 1, 1), timedelta(days=365 * 100)]
+        )[0]
+
+        width_delta = mcf_horizontal_range_dict.get(
+            mcf_band['Q'],
+            [datetime(1950, 1, 1), timedelta(days=365 * 100)]
+        )[1]
+        x1 = x0 + width_delta
+        
+        y0 = min_mcf_low_impurities
+        y1 = y0 + mcf_patch_height
+        
+        # Add the line marks as a filled rectangle shape
+        fig.add_shape(
+            type="rect",
+            x0=x0, x1=x1,
+            y0=y0, y1=y1,
+            xref="x", yref="y",
+            fillcolor=mcf_band['color'],
+            opacity=mcf_band['alpha'],
+            line=dict(width=0),
+            layer="below"      
+        )
+
+        # print the gain and temperature at which the minimum triple product is achieved for the low and high impurity cases
+        print(f"Q={mcf_band['Q']}, T_i0_min_mcf_low_impurities={T_i0_min_mcf_low_impurities:.2f}, T_i0_min_mcf_high_impurities={T_i0_min_mcf_high_impurities:.2f}")
+    
+    ########################################################################
+    #Adding corresponding annotations
+    xoffset = timedelta(days=365 * 5)
+    yoffset = 0.15
+    fig.add_annotation(
+        x=mcf_horizontal_range_dict[float('inf')][0] + xoffset,
+        y=np.log10(1.22e22) + yoffset,
+        text=r"$Q_{\rm sci}^{\rm MCF}=\infty$",
+        showarrow=False,
+        font=dict(color="red"),valign='top'
+    )
+    
+    fig.add_annotation(
+        x=mcf_horizontal_range_dict[10][0] + xoffset,
+        y=np.log10(6.85e21) + yoffset,
+        text=r"$Q_{\rm sci}^{\rm MCF}=10$",
+        showarrow=False,
+        font=dict(color="red"),
+    )
+    
+    fig.add_annotation(
+        x=mcf_horizontal_range_dict[2][0] + xoffset,
+        y=np.log10(2.55e21) + yoffset,
+        text=r"$Q_{\rm sci}^{\rm MCF}=2$",
+        showarrow=False,
+        font=dict(color="red"),
+    )
+
+    fig.add_annotation(
+        x=mcf_horizontal_range_dict[1][0] + xoffset,
+        y=np.log10(1.45e21) + yoffset,
+        text=r"$Q_{\rm sci}^{\rm MCF}=1$",
+        showarrow=False,
+        font=dict(color="red"),
+    )
+    fig.add_annotation(
+        x=datetime(1950, 6, 1) + xoffset * 1.8,
+        y=np.log10(5e20) + yoffset,
+        text=r"$T_{i0} \approx 20 \text{ to } 27~\mathrm{keV}$",
+        showarrow=False,
+        font=dict(color="red"),
+    )
+    ########################################################################
+    # # Draw golden rectangle around N210808 to highlight that it achieved threshold of ignition and is termimal data point for this graph
+    n210808_data = mcf_mif_icf_df[mcf_mif_icf_df['Shot'] == 'N210808']
+    x_center, y_center = n210808_data['Date'].iloc[0], n210808_data['nTtauEstar_max'].iloc[0]
+    # add_rectangle_around_point(ax, x_center, y_center, L_pixels=50)
+
+    # adding rectangle around point
+    x_center_paper = (x_center-fig.layout.xaxis.range[0])/(fig.layout.xaxis.range[1]-fig.layout.xaxis.range[0])
+    y_center_paper = (np.log10(y_center)-fig.layout.yaxis.range[0])/(fig.layout.yaxis.range[1]-fig.layout.yaxis.range[0])
+    box_dim = 0.015
+    fig.add_shape(
+        type="rect",
+        x0=x_center_paper-box_dim, x1=x_center_paper+box_dim,
+        y0=y_center_paper-box_dim, y1=y_center_paper+box_dim,
+        xref="paper", yref="paper",
+        fillcolor=None,
+        line=dict(color = 'yellow',width=3),
+        layer="below"      
+    )
+    ########################################################################
+    # Plot horizontal lines and annotations for ICF ignition only assuming T_i=4 keV and T_i=10 keV
+    # 4keV ICF Ignition Line
+    icf_ignition_4keV = icf_ex.triple_product_Q_sci(
+                            T_i0=4.0,
+                            Q_sci=float('inf'),
+                        )
+    fig.add_shape(
+        type='line',
+        x0=datetime(2000,1,1),x1=datetime(2050,1,1),
+        y0=icf_ignition_4keV,y1=icf_ignition_4keV,
+        line=dict(color='black'),
+        xref='x',
+        yref='y',
+    )
+    fig.add_annotation(
+        xref="paper",x=0.99,
+        yref="paper",y=0.985,
+        text=r"${\rm @\,4~keV}$",  
+        font=dict(size=14),
+        showarrow=False,
+
+    )
+    # 10keV ICF Ignition Line
+    icf_ignition_10keV = icf_ex.triple_product_Q_sci(
+                        T_i0=10.0,
+                        Q_sci=float('inf'),
+                    )
+    fig.add_shape(
+        type='line',
+        x0=datetime(2000,1,1),x1=datetime(2050,1,1),
+        y0=icf_ignition_10keV,y1=icf_ignition_10keV,
+        line=dict(color='black'),
+        xref='x',
+        yref='y',
+    )
+    fig.add_shape(
+        type='line',
+        x0=datetime(2000,1,1),x1=datetime(2050,1,1),
+        y0=icf_ignition_10keV,y1=icf_ignition_10keV,
+        line=dict(
+            color='gold',
+            dash = '0.5%',
+        ),
+        xref='x',
+        yref='y',
+    )
+    fig.add_annotation(        
+        xref="paper",x=1,
+        yref="paper",y=0.945,
+        text=r"${\rm @ 10~keV}$",  
+        font=dict(size=14),
+        showarrow=False,
+    )
+
+    fig.add_annotation(        
+        xref="paper",x=0.89,
+        yref="paper",y=1,
+        text=r"$(n T \tau_{\rm stag})_{\rm ig, hs}^{\rm ICF}$",  
+        font=dict(size=14),
+        showarrow=False,
+    )
+
+    
+    ########################################################################
+    #Special case handle
+    #SPARC
+    df = mcf_mif_icf_df.loc[mcf_mif_icf_df['Project Displayname'] == r'SPARC']
+    sparc_tp = df['nTtauEstar_max'].iloc[0]
+    sparc_minus_error = 4.1e21 # lower bound is at bottom of what's projected, Q_fuel = 2
+    
+    # SPARC has rebaselined Q>1 to 2027
+    x0 = datetime(2027, 1, 1)
+    x1 = x0 + timedelta(days=365 * 5)
+    y0 = sparc_tp
+    y1 = sparc_tp - sparc_minus_error
+
+    #Adding hoverboxes to a separate hidden object, a rectangle made of lines
+    rect_x = [x0, x1, x1, x0, x0]
+    rect_y = [y0, y0, y1, y1, y0]
+
+    #Filling of the box
+    fig.add_trace(go.Scatter(
+        x=rect_x,
+        y=rect_y,
+        mode="lines",  
+        fill='toself',
+        line=dict(width=1,color='white'),
+        fillcolor='red',
+        fillpattern=dict(
+            shape="/",  
+            solidity=0.6,
+            size=5,
+            fgcolor='white' 
+        ),
+        showlegend=False,
+    ))
+
+    #Adding annotation
+    fig.add_trace(go.Scatter(
+        x=rect_x,
+        y=rect_y,
+        mode="lines",            
+        line=dict(
+            width=0.5,
+            color="red", # Essentially the color of hoverbox background
+        ),    
+        customdata = list(zip(customlinks, df['Date'].dt.year, df['T_i_max'], df['n_i_max'], df['tau_E_star'], df['nTtauEstar_max'])) * len(rect_x),
+        hovertemplate=(
+            r"<b>%{text}</b><br>"
+            r"<i>Projections: %{customdata[1]}</i><br>"
+            r"T<sub>i</sub>: %{customdata[2]} keV<br>"
+            r"n: %{customdata[3]:.2e} m<sup>-3</sup><br>"
+            r"τ: %{customdata[4]:.2e} s<br>"
+            r"nTτ: %{customdata[5]:.2e} m<sup>-3</sup>keV s<extra></extra>"
+        ),
+        text=[df['Project Displayname'].iloc[0]+' : '+ df['Concept Displayname'].iloc[0]]* len(rect_x),
+        showlegend=False,
+    ))
+
+    ########################################################################
+    #ITER
+    df = mcf_mif_icf_df.loc[mcf_mif_icf_df['Project Displayname'] == r'ITER']
+    iter_tp = df['nTtauEstar_max'].iloc[0]
+    iter_minus_error = 2.2e21 # lower bound is at bottom of what's projected, Q_fuel = 10
+    
+    # ITER has rebaselined D-T operations to 2039.
+    x0 = datetime(2039, 1, 1)
+    x1 = x0 + timedelta(days=365 * 5)
+    y0 = iter_tp
+    y1 = iter_tp - iter_minus_error
+
+    #Adding hoverboxes to a separate hidden object, a rectangle made of lines
+    rect_x = [x0, x1, x1, x0, x0]
+    rect_y = [y0, y0, y1, y1, y0]
+
+    #Filling of the box
+    fig.add_trace(go.Scatter(
+        x=rect_x,
+        y=rect_y,
+        mode="lines",  
+        fill='toself',
+        line=dict(width=1,color='white'),
+        fillcolor='red',
+        fillpattern=dict(
+            shape="/",  
+            solidity=0.6,
+            size=5,
+            fgcolor='white' 
+        ),
+        showlegend=False,
+    ))
+
+    #Adding annotation
+    fig.add_trace(go.Scatter(
+        x=rect_x,
+        y=rect_y,
+        mode="lines",            
+        line=dict(
+            width=0.5,
+            color="red", # Essentially the color of hoverbox background
+        ),    
+        customdata = list(zip(customlinks, df['Date'].dt.year, df['T_i_max'], df['n_i_max'], df['tau_E_star'], df['nTtauEstar_max'])) * len(rect_x),
+        hovertemplate=(
+            r"<b>%{text}</b><br>"
+            r"<i>Projections: %{customdata[1]}</i><br>"
+            r"T<sub>i</sub>: %{customdata[2]} keV<br>"
+            r"n: %{customdata[3]:.2e} m<sup>-3</sup><br>"
+            r"τ: %{customdata[4]:.2e} s<br>"
+            r"nTτ: %{customdata[5]:.2e} m<sup>-3</sup>keV s<extra></extra>"
+        ),
+        text=[df['Project Displayname'].iloc[0]+' : '+ df['Concept Displayname'].iloc[0]]* len(rect_x),
+        showlegend=False,
+    ))
+
+    #All done. Returning required figure
     return fig
     
-HTMLplot_to_html(plotlyplot_ntau_vs_T(), name= 'ntau_vs_T.html')
+plotlyplot_to_html(plotlyplot_tripleprod_vs_year(), name= 'tripleprod_vs_year.html')
+plotlyplot_tripleprod_vs_year().show()
+
 
 # %%
